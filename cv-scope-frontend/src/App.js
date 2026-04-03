@@ -1,10 +1,17 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import Header from "./components/Header";
+import UploadForm from "./components/UploadForm";
+import ResultCard from "./components/ResultCard";
+import "./styles/global.css";
 
 function App() {
+  const [result, setResult] = useState(null);
+
   return (
-    <div className="App">
-      <h1>Coming Soon</h1>
+    <div className="container">
+      <Header />
+      <UploadForm onResult={setResult} />
+      <ResultCard result={result} />
     </div>
   );
 }
