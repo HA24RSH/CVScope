@@ -1,6 +1,13 @@
-SKILLS = [
-    "python", "java", "c++", "javascript", "react", "node", "mongodb",
-    "sql", "html", "css", "machine learning", "deep learning",
-    "nlp", "data analysis", "pandas", "numpy", "flask", "fastapi",
-    "git", "docker", "aws"
-]
+SKILLS = {
+    "python": ["python"],
+    "java": ["java"],
+    "javascript": ["javascript", "js", "typescript"],
+    "node": ["node", "node.js"],
+    "react": ["react"],
+    "sql": ["sql", "postgresql", "mysql"],
+    "html": ["html"],
+    "css": ["css"],
+    "git": ["git"],
+    "docker": ["docker"],
+    "aws": ["aws"]
+}

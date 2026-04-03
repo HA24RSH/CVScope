@@ -20,12 +20,12 @@ def extract_text(file):
     return ""
 
 def extract_skills(text):
-    doc = nlp(text.lower())
-    tokens = [token.text for token in doc]
-
+    text = text.lower()
     found = set()
-    for skill in SKILLS:
-        if skill in text.lower():
-            found.add(skill)
+
+    for skill, variants in SKILLS.items():
+        for v in variants:
+            if v in text:
+                found.add(skill)
 
     return list(found)

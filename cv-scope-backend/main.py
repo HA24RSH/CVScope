@@ -1,39 +1,61 @@
 from fastapi import FastAPI, UploadFile, Form
+from fastapi.middleware.cors import CORSMiddleware
 from utils import extract_text, extract_skills
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 app = FastAPI()
 
+# ✅ CORS FIX (VERY IMPORTANT)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# ✅ Health check route
 @app.get("/")
 def home():
     return {"message": "SkillSync Backend Running"}
 
+
+# ✅ MAIN ANALYSIS ROUTE
 @app.post("/analyze")
 async def analyze(resume: UploadFile, job_description: str = Form(...)):
-    
-    # Extract resume text
-    resume_text = extract_text(resume)
+    try:
+        # Extract resume text
+        resume_text = extract_text(resume)
 
-    # Extract skills
-    resume_skills = extract_skills(resume_text)
-    jd_skills = extract_skills(job_description)
+        if not resume_text:
+            return {"error": "Could not extract text from resume"}
 
-    # Matching
-    matched = list(set(resume_skills) & set(jd_skills))
-    missing = list(set(jd_skills) - set(resume_skills))
+        # Extract skills
+        resume_skills = extract_skills(resume_text)
+        jd_skills = extract_skills(job_description)
 
-    # Similarity score
-    vectorizer = TfidfVectorizer()
-    vectors = vectorizer.fit_transform([resume_text, job_description])
-    score = cosine_similarity(vectors[0:1], vectors[1:2])[0][0]
+        # Matching logic
+        matched = list(set(resume_skills) & set(jd_skills))
+        missing = list(set(jd_skills) - set(resume_skills))
 
-    match_percentage = round(score * 100, 2)
+        # Similarity score
+        vectorizer = TfidfVectorizer()
+        vectors = vectorizer.fit_transform([resume_text, job_description])
+        if len(jd_skills) == 0:
+            match_percentage = 0
+        else:
+            match_percentage = round((len(matched) / len(jd_skills)) * 100, 2)
 
-    return {
-        "match_percentage": match_percentage,
-        "resume_skills": resume_skills,
-        "job_skills": jd_skills,
-        "matched_skills": matched,
-        "missing_skills": missing
-    }
+        return {
+            "match_percentage": match_percentage,
+            "resume_skills": resume_skills,
+            "job_skills": jd_skills,
+            "matched_skills": matched,
+            "missing_skills": missing
+        }
+
+    except Exception as e:
+        return {
+            "error": str(e)
+        }
