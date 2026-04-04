@@ -1,8 +1,10 @@
 from fastapi import FastAPI, UploadFile, Form
 from fastapi.middleware.cors import CORSMiddleware
 from utils import extract_text, extract_skills
+from utils import calculate_similarity
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from utils import extract_text, extract_skills, calculate_similarity, match_skills
 
 app = FastAPI()
 
@@ -35,17 +37,9 @@ async def analyze(resume: UploadFile, job_description: str = Form(...)):
         resume_skills = extract_skills(resume_text)
         jd_skills = extract_skills(job_description)
 
-        # Matching logic
-        matched = list(set(resume_skills) & set(jd_skills))
-        missing = list(set(jd_skills) - set(resume_skills))
+        matched, missing = match_skills(resume_skills, jd_skills)
 
-        # Similarity score
-        vectorizer = TfidfVectorizer()
-        vectors = vectorizer.fit_transform([resume_text, job_description])
-        if len(jd_skills) == 0:
-            match_percentage = 0
-        else:
-            match_percentage = round((len(matched) / len(jd_skills)) * 100, 2)
+        match_percentage = calculate_similarity(resume_skills, jd_skills)
 
         return {
             "match_percentage": match_percentage,

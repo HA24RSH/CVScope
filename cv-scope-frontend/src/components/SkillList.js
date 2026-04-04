@@ -1,15 +1,16 @@
-function SkillList({ title, skills }) {
+function SkillList({ title, skills = [] }) {
   return (
     <div className="skill-box">
       <h3>{title}</h3>
-      {skills.length === 0 ? (
-        <p className="empty">None</p>
-      ) : (
+
+      {skills && skills.length > 0 ? (
         <ul>
           {skills.map((s, i) => (
             <li key={i}>{s}</li>
           ))}
         </ul>
+      ) : (
+        <p className="empty">None</p>
       )}
     </div>
   );

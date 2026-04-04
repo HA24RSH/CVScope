@@ -8,10 +8,10 @@ function ResultCard({ result }) {
       <h2>Match Score: {result.match_percentage}%</h2>
 
       <div className="grid">
-        <SkillList title="Resume Skills" skills={result.resume_skills} />
-        <SkillList title="Job Skills" skills={result.job_skills} />
-        <SkillList title="Matched Skills" skills={result.matched_skills} />
-        <SkillList title="Missing Skills" skills={result.missing_skills} />
+        <SkillList title="Resume Skills" skills={result?.resume_skills || []} />
+        <SkillList title="Job Skills" skills={result?.job_skills || []} />
+        <SkillList title="Matched Skills" skills={result?.matched_skills || []} />
+        <SkillList title="Missing Skills" skills={result?.missing_skills || []} />
       </div>
     </div>
   );
