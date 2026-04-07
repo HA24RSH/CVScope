@@ -1,11 +1,12 @@
 function Header() {
   return (
-    <div style={{ textAlign: "center", marginBottom: "30px" }}>
-      <h1 style={{ fontSize: "32px" }}>CvScope</h1>
-      <p style={{ color: "#666" }}>
-        Resume Analysis & Skill Matching System
-      </p>
-    </div>
+    <header className="app-header">
+      <div className="brand">
+        <div className="brand-title">CVScope</div>
+        <div className="brand-subtitle">Resume analysis & job matching</div>
+      </div>
+      <div className="brand-badge">NLP v2</div>
+    </header>
   );
 }
 
