@@ -30,7 +30,6 @@ function App() {
       <main className="layout">
         <section className="panel">
           <div className="panel-title">Analyze</div>
-          <UploadForm onResult={setResult} />
         </section>
 
         <section className="panel">
