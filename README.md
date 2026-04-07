@@ -1,15 +1,17 @@
 CvScope — Resume Analysis & Skill Matching (FastAPI + React)
 CvScope is a full-stack web app that compares a candidate resume (PDF/DOCX) against a job description and returns:
 
-Match percentage (TF‑IDF + cosine similarity)
+Match percentage (skills coverage + section-weighted TF‑IDF cosine similarity)
 Extracted resume skills and job skills
 Matched skills and missing skills
+Similarity breakdown (skill match vs text similarity)
+Explainable skill extraction details (confidence + sources)
 Features
 Upload resume (PDF / DOCX)
 Paste job description
-Skill extraction (regex + simple heuristics)
+Skill extraction (spaCy PhraseMatcher + NER + noun chunks + YAKE keyphrases)
 Skill matching (fuzzy match)
-Match percentage (TF‑IDF + cosine similarity)
+Match percentage (weighted skills + text similarity)
 React UI to display results
 Tech Stack
 Backend
@@ -18,6 +20,9 @@ FastAPI (API server): main.py
 PDF parsing: pdfplumber
 DOCX parsing: python-docx
 Similarity: scikit-learn (TF‑IDF + cosine similarity)
+NLP: spaCy (en_core_web_sm)
+Fuzzy matching: rapidfuzz
+Keyphrases (unknown skills): YAKE
 Upload handling: python-multipart (required by FastAPI for form/file uploads)
 Frontend
 
@@ -59,7 +64,7 @@ Check it in the browser:
 http://127.0.0.1:8000/
 You should see:
 
-{"message":"SkillSync Backend Running"}
+{"message":"CVScope Backend v2 Running","status":"ok"}
 Important note about the common “uvicorn not recognized” error:
 
 If you run uvicorn main:app --reload and get “uvicorn is not recognized”, use python -m uvicorn ... as shown above. That ensures you’re using the uvicorn installed in your currently activated venv.
@@ -96,6 +101,9 @@ resume_skills: array of strings
 job_skills: array of strings
 matched_skills: array of strings
 missing_skills: array of strings
+similarity_breakdown: object (skill_match_score, text_similarity_score, final_score, …)
+resume_skill_details: array (skill, confidence, sources, sections, surface_forms)
+job_skill_details: array (skill, confidence, sources, sections, surface_forms)
 Where it’s implemented:
 
 Route: main.py
@@ -125,6 +133,9 @@ Change ports when starting:
 Backend: use a different --port
 Frontend: React will usually prompt to use another port automatically
 Notes / Current Behavior
-Skill extraction is currently rule-based (regex + heuristics) in utils.py
-Similarity score is TF‑IDF + cosine similarity (scikit-learn)
-Fuzzy matching uses SequenceMatcher for “close enough” skill matches
+Skill extraction uses a multi-pass NLP pipeline in utils.py:
+- PhraseMatcher (taxonomy/aliases) + NER fallback + noun chunks + YAKE keyphrases
+Scoring combines:
+- Skill coverage (confidence-weighted when available)
+- Section-weighted TF‑IDF cosine similarity
+Fuzzy matching uses rapidfuzz token_sort_ratio
