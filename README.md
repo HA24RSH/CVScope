@@ -1,112 +1,130 @@
-# 🚀 CvScope – Resume Analysis & Skill Matching System
+CvScope — Resume Analysis & Skill Matching (FastAPI + React)
+CvScope is a full-stack web app that compares a candidate resume (PDF/DOCX) against a job description and returns:
 
-CvScope is a full-stack web application that analyzes a candidate’s resume against a job description (JD) and provides intelligent insights such as match percentage, skill comparison, and learning recommendations.
+Match percentage (TF‑IDF + cosine similarity)
+Extracted resume skills and job skills
+Matched skills and missing skills
+Features
+Upload resume (PDF / DOCX)
+Paste job description
+Skill extraction (regex + simple heuristics)
+Skill matching (fuzzy match)
+Match percentage (TF‑IDF + cosine similarity)
+React UI to display results
+Tech Stack
+Backend
 
----
+FastAPI (API server): main.py
+PDF parsing: pdfplumber
+DOCX parsing: python-docx
+Similarity: scikit-learn (TF‑IDF + cosine similarity)
+Upload handling: python-multipart (required by FastAPI for form/file uploads)
+Frontend
 
-## 🧠 Features
+React (Create React App): package.json
+Project Structure
+Backend
 
-- 📄 Upload Resume (PDF / DOCX)
-- 📝 Paste Job Description
-- 🔍 Automatic Skill Extraction (Dynamic – No fixed list)
-- 📊 Match Percentage using ML (TF-IDF + Cosine Similarity)
-- ✅ Matched Skills
-- ❌ Missing Skills
-- 📚 Learning Recommendations for Missing Skills
-- 💻 Clean and responsive React UI
+main.py — FastAPI app, routes
+utils.py — text extraction, skill extraction, similarity, fuzzy matching
+skill_db.py — optional skill aliases (currently imported but not actively used by the extractor)
+Resume.csv — sample data (optional)
+Frontend
 
----
+UploadForm.js — posts resume + job description to backend
+ResultCard.js — renders results
+Prerequisites
+Python installed (any recent 3.x version should work)
+Node.js + npm installed
+Setup and Run (Windows, step-by-step)
+You must run BOTH backend and frontend at the same time.
 
-## 🏗️ Tech Stack
+1) Start the backend (FastAPI)
+Open a terminal (PowerShell) and run:
 
-### Frontend
-- React (Create React App)
-- CSS
+If you already have a virtual environment folder there (for example, named venv), activate it. Otherwise create one (recommended: .venv):
 
-### Backend
-- FastAPI (Python)
-- spaCy (NLP)
-- scikit-learn (Machine Learning)
-- pdfplumber (PDF parsing)
-- python-docx (DOCX parsing)
+Create a venv (recommended):
 
----
+Activate it:
 
-## 📁 Project Structure
-    cvscope/
-    │
-    ├── backend/
-    │ ├── main.py
-    │ ├── utils.py
-    │ ├── recommender.py
-    │ ├── skill_db.py (optional)
-    │ ├── requirements.txt
-    │
-    ├── cv-scope-frontend/
-    │ ├── src/
-    │ │ ├── components/
-    │ │ ├── App.js
-    │ │ ├── index.js
-    │ │ └── styles/
-    │ ├── package.json
-    │
-    └── README.md
+If activation is blocked, run this once in the same terminal and retry activation:
 
----
+Upgrade pip and install dependencies:
 
-## ⚙️ Installation & Setup
+Start the backend server:
 
-### 🔹 1. Clone the Repository
+Check it in the browser:
 
-```bash
-git clone https://github.com/your-username/cvscope.git
-cd cvscope
+http://127.0.0.1:8000/
+You should see:
 
----
+{"message":"SkillSync Backend Running"}
+Important note about the common “uvicorn not recognized” error:
 
-    Backend Setup (FastAPI) :
+If you run uvicorn main:app --reload and get “uvicorn is not recognized”, use python -m uvicorn ... as shown above. That ensures you’re using the uvicorn installed in your currently activated venv.
+2) Start the frontend (React)
+Open a second terminal and run:
 
-    📌 Step 1: Navigate to backend
-        cd backend
+Open:
 
-    📌 Step 2: Create Virtual Environment
-        python -m venv venv
+http://localhost:3000/
+How the App Works
+Frontend → Backend call
+The frontend posts a multipart form request to:
 
-    📌 Step 3: Activate Virtual Environment
-        Windows:
-            venv\Scripts\activate
-        Mac/Linux:
-            source venv/bin/activate
+http://127.0.0.1:8000/analyze
+This is hardcoded in UploadForm.js. If you change the backend host/port, update that URL.
 
-    📌 Step 4: Install Dependencies
-        pip install -r requirements.txt
+Backend API
+Health check
 
-    If requirements.txt is missing, install manually:
+GET /
+Response example:
+{"message":"SkillSync Backend Running"}
+Analyze endpoint
 
-    pip install fastapi uvicorn pdfplumber python-docx spacy scikit-learn
+POST /analyze
+Content-Type: multipart/form-data
+Form fields:
+resume: file (PDF or DOCX)
+job_description: string
+Response JSON fields:
 
-    📌 Step 5: Install spaCy Model
-        python -m spacy download en_core_web_sm
+match_percentage: number (0–100)
+resume_skills: array of strings
+job_skills: array of strings
+matched_skills: array of strings
+missing_skills: array of strings
+Where it’s implemented:
 
-    📌 Step 6: Run Backend Server
-        uvicorn main:app --reload
+Route: main.py
+Logic: utils.py
+Troubleshooting
+Backend won’t start: “uvicorn is not recognized”
 
-👉 Backend will run at:
+Activate the venv first, then run:
+python -m uvicorn main:app --reload --host 127.0.0.1 --port 8000
+Backend error about multipart/form-data
 
-http://127.0.0.1:8000
+Install python-multipart in the same venv you’re running:
+python -m pip install python-multipart
+PowerShell: running scripts is disabled
 
----
+Run in that terminal:
+Set-ExecutionPolicy -Scope Process Bypass
+Then activate your venv again.
+Frontend shows “Failed to connect to backend”
 
-    🌐 Frontend Setup (React)
-    📌 Step 1: Navigate to frontend
-        cd cv-scope-frontend
+Confirm backend is running at http://127.0.0.1:8000/
+Confirm the frontend is using the same URL in UploadForm.js
+Make sure port 8000 isn’t blocked/in use.
+Port already in use
 
-    📌 Step 2: Install dependencies
-        npm install
-
-    📌 Step 3: Run frontend
-        npm start
-
-👉 Frontend will run at:
-
-http://localhost:3000
+Change ports when starting:
+Backend: use a different --port
+Frontend: React will usually prompt to use another port automatically
+Notes / Current Behavior
+Skill extraction is currently rule-based (regex + heuristics) in utils.py
+Similarity score is TF‑IDF + cosine similarity (scikit-learn)
+Fuzzy matching uses SequenceMatcher for “close enough” skill matches
