@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import io
 import logging
+import os
 import re
 from dataclasses import dataclass
 from typing import Literal, NamedTuple
@@ -40,6 +41,13 @@ try:
 except ImportError:  # pragma: no cover
     yake = None  # type: ignore
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Feature flag: set CVSCOPE_DISABLE_YAKE=1 in environment to fully disable YAKE
+# regardless of whether the package is installed. This ensures deterministic
+# behaviour across machines that may have different YAKE versions.
+# ─────────────────────────────────────────────────────────────────────────────
+ENABLE_YAKE: bool = os.environ.get("CVSCOPE_DISABLE_YAKE", "0").strip() not in ("1", "true", "yes")
+
 logger = logging.getLogger(__name__)
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -56,10 +64,32 @@ def warmup_models() -> None:
     Pre-load all NLP resources at server startup.
     Call this from FastAPI's @app.on_event('startup') so the first
     user request is NOT slow.
+    Logs all package versions on startup so cross-machine differences
+    are immediately visible.
     """
     global _NLP, _MATCHER
     if _NLP is not None:
         return  # already warmed up
+
+    # ── Version logging (helps debug cross-machine environment drift) ─────────
+    import sys
+    import importlib.metadata as _meta
+    def _ver(pkg: str) -> str:
+        try:
+            return _meta.version(pkg)
+        except Exception:
+            return "not installed"
+
+    logger.info(
+        "CVScope environment: python=%s spacy=%s pdfplumber=%s rapidfuzz=%s scikit-learn=%s yake=%s ENABLE_YAKE=%s",
+        sys.version.split()[0],
+        _ver("spacy"),
+        _ver("pdfplumber"),
+        _ver("rapidfuzz"),
+        _ver("scikit-learn"),
+        _ver("yake"),
+        ENABLE_YAKE,
+    )
 
     logger.info("CVScope: loading spaCy en_core_web_sm …")
     # Single pipeline with all components — used for NER + noun-chunks + PhraseMatcher
@@ -98,16 +128,16 @@ def _build_phrase_matcher(nlp: spacy.Language) -> PhraseMatcher:
 
 
 def _get_yake_extractor():
-    """Create and cache the YAKE keyword extractor (if installed)."""
+    """Create and cache the YAKE keyword extractor (if installed and enabled)."""
     global _YAKE_EXTRACTOR
-    if yake is None:
+    if not ENABLE_YAKE or yake is None:
         return None
     if _YAKE_EXTRACTOR is None:
         _YAKE_EXTRACTOR = yake.KeywordExtractor(
             lan="en",
-            n=3,
-            top=40,
-            dedupLim=0.9,
+            n=2,       # bi-grams only — tri-grams produce concatenated skill spam
+            top=25,    # tighter cap reduces noise from long documents
+            dedupLim=0.7,
         )
     return _YAKE_EXTRACTOR
 
@@ -540,6 +570,15 @@ def _pass3_noun_chunks_evidence(doc, *, section: str, section_weight: float) -> 
 
 
 def _pass4_yake_evidence(text: str, *, section: str, section_weight: float) -> list[SkillEvidence]:
+    """
+    Pass 4 — YAKE keyphrase extraction.
+
+    CRITICAL taxonomy guard: ONLY phrases that normalize to a known canonical
+    skill are accepted. Free-form multi-word keyphrases invented by YAKE
+    (e.g. "javascript mongodb next.js") are discarded even if they look
+    interesting. This ensures identical output regardless of YAKE version
+    and prevents cross-machine divergence.
+    """
     extractor = _get_yake_extractor()
     if extractor is None:
         return []
@@ -558,6 +597,16 @@ def _pass4_yake_evidence(text: str, *, section: str, section_weight: float) -> l
             continue
         if not (3 <= len(phrase) <= 40):
             continue
+
+        # ── TAXONOMY GUARD ────────────────────────────────────────────────────
+        # YAKE must only augment taxonomy-known skills, never introduce new ones.
+        # This is the fix for cross-machine divergence: without this guard,
+        # different YAKE versions/params produce different arbitrary keyphrases
+        # that pollute extracted skills and inflate skill counts.
+        canonical = _normalize_skill(phrase)
+        if canonical is None or canonical not in CANONICAL_SKILLS:
+            continue  # discard — not a known skill
+        # ─────────────────────────────────────────────────────────────────────
 
         # YAKE score is lower-is-better; map roughly into (0..1]
         yake_factor = float(1.0 / (1.0 + (float(score) * 10.0)))

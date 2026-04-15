@@ -7,14 +7,29 @@ import "./styles/global.css";
 function EmptyState() {
   return (
     <div className="card empty-state">
-      <h2 className="empty-title">Results</h2>
+      <div className="empty-illustration">🎯</div>
+      <h2 className="empty-title">Your results will appear here</h2>
       <p className="empty-subtitle">
-        Upload a resume and paste a job description to see your match.
+        Upload a resume and paste a job description to see your match score,
+        skill gaps, and personalized learning resources.
       </p>
       <div className="empty-hints">
-        <div className="hint">PDF or DOCX supported</div>
-        <div className="hint">Shows matched and missing skills</div>
-        <div className="hint">Breaks down skills vs text similarity</div>
+        <div className="hint">
+          <span className="hint-icon">📄</span>
+          PDF or DOCX resume supported
+        </div>
+        <div className="hint">
+          <span className="hint-icon">🧠</span>
+          4-layer NLP pipeline extracts skills
+        </div>
+        <div className="hint">
+          <span className="hint-icon">✅</span>
+          Matched &amp; missing skills highlighted
+        </div>
+        <div className="hint">
+          <span className="hint-icon">🎓</span>
+          Free learning resources for skill gaps
+        </div>
       </div>
     </div>
   );

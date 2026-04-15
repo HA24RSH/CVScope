@@ -1,4 +1,8 @@
-function SkillList({ title, skills = [] }) {
+/**
+ * SkillList — renders a labelled pill-grid of skills.
+ * variant: "default" | "matched" | "missing" | "jd"
+ */
+function SkillList({ title, skills = [], variant = "default" }) {
   const list = Array.isArray(skills) ? skills : [];
 
   return (
@@ -11,13 +15,13 @@ function SkillList({ title, skills = [] }) {
       {list.length > 0 ? (
         <ul className="skill-pills">
           {list.map((s, i) => (
-            <li className="pill" key={`${s}-${i}`}>
+            <li className={`pill ${variant}`} key={`${s}-${i}`}>
               {s}
             </li>
           ))}
         </ul>
       ) : (
-        <p className="empty">None</p>
+        <p className="empty-pill-msg">None</p>
       )}
     </div>
   );

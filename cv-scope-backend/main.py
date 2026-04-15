@@ -3,10 +3,14 @@ main.py  —  CVScope FastAPI Backend (v2)
 """
 
 from contextlib import asynccontextmanager
+import importlib.metadata as _meta
+import sys
+
 from fastapi import FastAPI, UploadFile, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
-from utils import extract_text, extract_skills_detailed, match_skills, calculate_similarity, warmup_models
+from utils import extract_text, extract_skills_detailed, match_skills, calculate_similarity, warmup_models, ENABLE_YAKE
+from recommendations import get_recommendations
 
 
 @asynccontextmanager
@@ -39,6 +43,42 @@ def health():
     return {"status": "ok"}
 
 
+# ── Environment info (for cross-machine debugging) ───────────────────────────
+@app.get("/env")
+def env_info():
+    """
+    Returns package versions and feature flags.
+    Use this to confirm both machines have identical environments.
+    Share with friend: GET http://127.0.0.1:8000/env
+    """
+    def _ver(pkg: str) -> str:
+        try:
+            return _meta.version(pkg)
+        except Exception:
+            return "not installed"
+
+    return {
+        "python": sys.version.split()[0],
+        "packages": {
+            "spacy":        _ver("spacy"),
+            "pdfplumber":   _ver("pdfplumber"),
+            "rapidfuzz":    _ver("rapidfuzz"),
+            "scikit-learn": _ver("scikit-learn"),
+            "yake":         _ver("yake"),
+            "fastapi":      _ver("fastapi"),
+            "uvicorn":      _ver("uvicorn"),
+            "python-docx":  _ver("python-docx"),
+        },
+        "feature_flags": {
+            "ENABLE_YAKE": ENABLE_YAKE,
+        },
+        "note": (
+            "Share this output with collaborators to confirm identical environments. "
+            "All 'packages' versions must match for deterministic skill extraction."
+        ),
+    }
+
+
 # ── Main analysis route ───────────────────────────────────────────────────────
 @app.post("/analyze")
 async def analyze(resume: UploadFile, job_description: str = Form(...)):
@@ -54,8 +94,9 @@ async def analyze(resume: UploadFile, job_description: str = Form(...)):
       matched_skills       — JD skills found in resume
       missing_skills       — JD skills NOT found in resume
       similarity_breakdown — skill_match_score, text_similarity_score, final_score
-            resume_skill_details — explainability payload (confidence + sources + sections)
-            job_skill_details    — explainability payload (confidence + sources + sections)
+      resume_skill_details — explainability payload (confidence + sources + sections)
+      job_skill_details    — explainability payload (confidence + sources + sections)
+      recommendations      — curated learning resources for each missing skill
     """
     try:
         # ── Validate file type ────────────────────────────────────────────────
@@ -100,6 +141,9 @@ async def analyze(resume: UploadFile, job_description: str = Form(...)):
             jd_skill_weights=jd_extraction.confidence_by_skill,
         )
 
+        # ── Recommendations for missing skills ────────────────────────────────
+        recommendations = get_recommendations(match_result.missing)
+
         return {
             "match_percentage": breakdown["final_score"],
             "resume_skills": resume_skills,
@@ -109,6 +153,7 @@ async def analyze(resume: UploadFile, job_description: str = Form(...)):
             "similarity_breakdown": breakdown,
             "resume_skill_details": resume_extraction.details,
             "job_skill_details": jd_extraction.details,
+            "recommendations": recommendations,
         }
 
     except HTTPException:
