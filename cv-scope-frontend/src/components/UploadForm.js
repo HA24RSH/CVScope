@@ -1,5 +1,44 @@
 import { useState, useRef } from "react";
 
+/* ── SVG Upload Icon ─────────────────────────────────────────────────────── */
+function UploadIcon({ className }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M12 16V4m0 0L8 8m4-4 4 4" />
+      <path d="M4 20h16" />
+    </svg>
+  );
+}
+
+/* ── SVG File Icon ───────────────────────────────────────────────────────── */
+function FileIcon({ className }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+      <polyline points="14 2 14 8 20 8" />
+    </svg>
+  );
+}
+
+/* ── Loading Steps ───────────────────────────────────────────────────────── */
 const STEPS = [
   "Extracting text from resume…",
   "Running NLP skill pipeline…",
@@ -19,22 +58,21 @@ function LoadingSteps({ activeStep }) {
               key={i}
               className={`loading-step${isDone ? " done" : isActive ? " active" : ""}`}
             >
-              <span className="step-dot" />
+              <span className="step-dot" aria-hidden="true" />
               {isDone ? "✓ " : ""}{label}
             </div>
           );
         })}
       </div>
-      <div style={{ marginTop: 10 }}>
-        <div className="loading-bar-track">
-          <div className="loading-bar-fill" />
-        </div>
+      <div className="loading-bar-track">
+        <div className="loading-bar-fill" />
       </div>
     </div>
   );
 }
 
-function UploadForm({ onResult }) {
+/* ── Upload Form ─────────────────────────────────────────────────────────── */
+function UploadForm({ onResult, dashboardRef }) {
   const [file, setFile]         = useState(null);
   const [jd, setJd]             = useState("");
   const [loading, setLoading]   = useState(false);
@@ -46,8 +84,8 @@ function UploadForm({ onResult }) {
   const apiBaseUrl = process.env.REACT_APP_API_BASE_URL || "http://127.0.0.1:8000";
   const JD_MAX = 8000;
 
-  /* ── Drag & drop handlers ─────────────────────────────────────────── */
-  const handleDragOver = (e) => { e.preventDefault(); setDragOver(true); };
+  /* ── Drag & drop ──────────────────────────────────────────────────────── */
+  const handleDragOver  = (e) => { e.preventDefault(); setDragOver(true); };
   const handleDragLeave = ()  => setDragOver(false);
   const handleDrop = (e) => {
     e.preventDefault();
@@ -66,7 +104,7 @@ function UploadForm({ onResult }) {
     setFile(f);
   };
 
-  /* ── Submit ───────────────────────────────────────────────────────── */
+  /* ── Submit ───────────────────────────────────────────────────────────── */
   const handleSubmit = async () => {
     if (loading) return;
     setError("");
@@ -84,7 +122,6 @@ function UploadForm({ onResult }) {
     formData.append("resume", file);
     formData.append("job_description", jd);
 
-    // Animate through loading steps
     const stepTimer = setInterval(() => {
       setStep((s) => (s < STEPS.length - 1 ? s + 1 : s));
     }, 900);
@@ -117,6 +154,15 @@ function UploadForm({ onResult }) {
         job_skill_details:    data.job_skill_details     ?? [],
         recommendations:      data.recommendations       ?? [],
       });
+
+      // Smooth scroll to dashboard after brief delay
+      setTimeout(() => {
+        dashboardRef?.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 150);
+
     } catch (err) {
       clearInterval(stepTimer);
       console.error("Error:", err);
@@ -127,11 +173,11 @@ function UploadForm({ onResult }) {
     setStep(0);
   };
 
-  /* ── Render ───────────────────────────────────────────────────────── */
+  /* ── Render ───────────────────────────────────────────────────────────── */
   return (
     <div className="card" aria-busy={loading}>
 
-      {/* ── File Upload ──────────────────────────────────────────── */}
+      {/* ── File Upload ─────────────────────────────────────────────────── */}
       <div className="field">
         <label className="label">Resume</label>
         <div
@@ -146,23 +192,22 @@ function UploadForm({ onResult }) {
             accept=".pdf,.docx"
             disabled={loading}
             onChange={(e) => pickFile(e.target.files[0])}
+            aria-label="Upload resume PDF or DOCX"
           />
           <div className="drop-zone-inner">
             {file ? (
               <>
-                <div className="drop-icon">✅</div>
-                <div className="drop-filename">
-                  <span>📄</span> {file.name}
-                </div>
+                <FileIcon className="drop-icon-svg" />
+                <div className="drop-filename">{file.name}</div>
                 <div className="drop-subtitle">
                   {(file.size / 1024).toFixed(1)} KB · Click to replace
                 </div>
               </>
             ) : (
               <>
-                <div className="drop-icon">📂</div>
+                <UploadIcon className="drop-icon-svg" />
                 <div className="drop-title">
-                  {dragOver ? "Drop it!" : "Drop your resume here"}
+                  {dragOver ? "Drop it here" : "Drop your resume here"}
                 </div>
                 <div className="drop-subtitle">or click to browse · PDF or DOCX</div>
               </>
@@ -171,7 +216,7 @@ function UploadForm({ onResult }) {
         </div>
       </div>
 
-      {/* ── Job Description ──────────────────────────────────────── */}
+      {/* ── Job Description ─────────────────────────────────────────────── */}
       <div className="field">
         <label className="label">Job Description</label>
         <div className="textarea-wrap">
@@ -182,29 +227,30 @@ function UploadForm({ onResult }) {
             maxLength={JD_MAX}
             onChange={(e) => setJd(e.target.value)}
             rows={8}
+            aria-label="Job description"
           />
           <span className="char-counter">{jd.length}/{JD_MAX}</span>
         </div>
-        <div className="help-text">Tip: include the full requirements section for best results</div>
+        <div className="help-text">Include the full requirements section for best results.</div>
       </div>
 
-      {/* ── Submit Button ─────────────────────────────────────────── */}
+      {/* ── Submit ──────────────────────────────────────────────────────── */}
       <button
         className="btn-analyze"
         onClick={handleSubmit}
         disabled={loading}
         id="analyze-btn"
       >
-        {loading ? "Analyzing…" : "⚡ Analyze Match"}
+        {loading ? "Analyzing…" : "Analyze Match"}
       </button>
 
-      {/* ── Loading Steps ─────────────────────────────────────────── */}
+      {/* ── Loading ─────────────────────────────────────────────────────── */}
       {loading && <LoadingSteps activeStep={step} />}
 
-      {/* ── Error ─────────────────────────────────────────────────── */}
+      {/* ── Error ───────────────────────────────────────────────────────── */}
       {error && (
         <div className="alert" role="alert">
-          <span>⚠️</span>
+          <span>⚠</span>
           <span>{error}</span>
         </div>
       )}

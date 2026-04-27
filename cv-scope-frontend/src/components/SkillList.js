@@ -21,7 +21,7 @@ function SkillList({ title, skills = [], variant = "default" }) {
           ))}
         </ul>
       ) : (
-        <p className="empty-pill-msg">None</p>
+        <p className="empty-pill-msg">None detected</p>
       )}
     </div>
   );

@@ -1,17 +1,16 @@
 function Header() {
   return (
     <header className="app-header">
-      <div className="brand">
+      <div className="header-inner">
+        {/* Left: gold dot + wordmark */}
         <div className="brand-logo">
-          <div className="brand-icon">🎯</div>
+          <div className="brand-dot" aria-hidden="true" />
           <div className="brand-title">CVScope</div>
         </div>
-        <div className="brand-subtitle">AI-powered resume analysis &amp; job matching</div>
-      </div>
 
-      <div className="header-right">
-        <div className="brand-badge">
-          <span className="badge-dot" />
+        {/* Right: status pill */}
+        <div className="header-pill" role="status" aria-label="NLP v2 Live">
+          <span className="header-pill-dot" aria-hidden="true" />
           NLP v2 · Live
         </div>
       </div>
