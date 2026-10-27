@@ -4,6 +4,9 @@ skill_taxonomy.py
 Curated skill taxonomy: canonical_name → list of known aliases.
 ALIAS_MAP provides O(1) lookup: any alias → canonical name.
 PhraseMatcher patterns are built from this at startup.
+
+Skill categories are defined in SKILL_CATEGORIES (category → [skill_names])
+and SKILL_CATEGORY_MAP (skill_name → category) for O(1) lookup.
 """
 
 # Format: "canonical_name": ["alias1", "alias2", ...]
@@ -229,3 +232,90 @@ for canonical, aliases in CANONICAL_SKILLS.items():
 
 # All canonical skill names as a set (for quick membership check)
 CANONICAL_SET: set[str] = set(CANONICAL_SKILLS.keys())
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Skill Categories
+# Maps each category to a list of canonical skill names it contains.
+# A skill may appear in only one primary category.
+# ─────────────────────────────────────────────────────────────────────────────
+
+SKILL_CATEGORIES: dict[str, list[str]] = {
+    "Programming Languages": [
+        "python", "javascript", "typescript", "java", "kotlin", "swift",
+        "golang", "rust", "csharp", "cpp", "c", "ruby", "php", "scala",
+        "perl", "r", "dart", "elixir", "haskell", "clojure", "lua",
+        "matlab", "shell", "powershell", "solidity",
+    ],
+    "Frontend Development": [
+        "react", "react native", "angular", "vue", "svelte", "nextjs",
+        "nuxtjs", "html", "css", "sass", "tailwindcss", "bootstrap",
+        "materialui", "jquery", "webpack", "vite", "redux", "graphql",
+        "webassembly", "d3js", "threejs",
+    ],
+    "Backend Development": [
+        "nodejs", "express", "fastapi", "django", "flask", "spring",
+        "laravel", "rails", "nestjs", "gin", "fiber", "actix", "aspnet",
+        "fastify", "hapi", "tornado", "aiohttp", "rest api", "graphql api",
+        "grpc", "microservices", "websocket", "oauth", "api design",
+    ],
+    "Databases": [
+        "sql", "mysql", "postgresql", "sqlite", "mongodb", "redis",
+        "firebase", "elasticsearch", "cassandra", "dynamodb", "oracledb",
+        "mssql", "neo4j", "couchdb", "supabase", "planetscale", "prisma",
+        "sqlalchemy", "mongoose", "sequelize",
+    ],
+    "AI and Machine Learning": [
+        "machine learning", "deep learning", "tensorflow", "pytorch", "keras",
+        "scikit-learn", "numpy", "pandas", "opencv", "nlp", "spacy",
+        "hugging face", "langchain", "openai", "computer vision", "mlflow",
+        "jupyter",
+    ],
+    "Data Analytics": [
+        "data analysis", "data visualization", "tableau", "power bi",
+        "hadoop", "spark", "kafka", "airflow", "matplotlib", "seaborn", "r",
+        "excel", "google sheets",
+    ],
+    "Cloud Computing": [
+        "aws", "azure", "gcp", "serverless", "heroku", "vercel", "netlify",
+        "cloudflare", "firebase",
+    ],
+    "DevOps": [
+        "docker", "kubernetes", "terraform", "ansible", "jenkins",
+        "github actions", "gitlab ci", "circleci", "nginx", "apache",
+        "linux", "git", "github", "gitlab", "bitbucket", "ci/cd",
+    ],
+    "Cybersecurity": [
+        "cybersecurity", "penetration testing", "cryptography", "ssl/tls",
+    ],
+    "Software Development": [
+        "agile", "tdd", "oop", "functional programming", "system design",
+        "design patterns", "event driven", "unit testing", "jest", "pytest",
+        "selenium", "cypress", "playwright", "mocha", "chai", "vitest",
+        "testng", "junit",
+    ],
+    "Tools": [
+        "postman", "figma", "jira", "confluence", "notion", "vscode",
+        "vim", "wordpress", "shopify", "zapier", "linux cli",
+    ],
+    "Mobile Development": [
+        "android", "ios", "flutter", "xamarin", "ionic", "react native", "swift",
+    ],
+    "Blockchain": [
+        "blockchain", "solidity", "ethereum", "smart contracts", "nft",
+    ],
+}
+
+# Flat skill → category map (O(1) lookup).
+# If a skill appears in multiple categories above, the LAST assignment wins.
+# Keep categories ordered from most-specific to least-specific to get best label.
+SKILL_CATEGORY_MAP: dict[str, str] = {}
+for _cat, _skills in SKILL_CATEGORIES.items():
+    for _s in _skills:
+        SKILL_CATEGORY_MAP[_s] = _cat
+
+
+def get_skill_category(skill: str) -> str:
+    """Return the display category for a canonical skill name."""
+    return SKILL_CATEGORY_MAP.get(skill, "Other")
+

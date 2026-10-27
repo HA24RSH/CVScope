@@ -1,0 +1,98 @@
+[
+  {
+    "role": "Frontend Developer",
+    "description": "Builds user interfaces and client-side functionality for web applications.",
+    "required_skills": ["html", "css", "javascript", "react", "git"],
+    "preferred_skills": ["typescript", "nextjs", "redux", "sass", "tailwindcss", "webpack", "vite", "jest"],
+    "related_roles": ["Full-Stack Developer", "UI Engineer"],
+    "icon": "\ud83c\udf10"
+  },
+  {
+    "role": "Backend Developer",
+    "description": "Builds server-side logic, APIs, and databases that power applications.",
+    "required_skills": ["python", "rest api", "sql", "git", "linux"],
+    "preferred_skills": ["django", "flask", "fastapi", "nodejs", "postgresql", "mongodb", "redis", "docker"],
+    "related_roles": ["Full-Stack Developer", "API Engineer"],
+    "icon": "\u2699\ufe0f"
+  },
+  {
+    "role": "Full-Stack Developer",
+    "description": "Builds both frontend and backend components of web applications end-to-end.",
+    "required_skills": ["html", "css", "javascript", "react", "nodejs", "sql", "git"],
+    "preferred_skills": ["typescript", "nextjs", "postgresql", "mongodb", "docker", "rest api", "redux"],
+    "related_roles": ["Frontend Developer", "Backend Developer"],
+    "icon": "\ud83d\udd04"
+  },
+  {
+    "role": "Data Analyst",
+    "description": "Analyses structured data to produce insights, reports, and visualisations.",
+    "required_skills": ["sql", "python", "pandas", "excel", "data analysis"],
+    "preferred_skills": ["numpy", "matplotlib", "seaborn", "power bi", "tableau", "r", "data visualization"],
+    "related_roles": ["Business Analyst", "Data Scientist"],
+    "icon": "\ud83d\udcca"
+  },
+  {
+    "role": "Machine Learning Engineer",
+    "description": "Designs, trains, and deploys machine learning models into production systems.",
+    "required_skills": ["python", "machine learning", "numpy", "pandas", "scikit-learn"],
+    "preferred_skills": ["deep learning", "tensorflow", "pytorch", "mlflow", "docker", "sql", "jupyter", "git"],
+    "related_roles": ["Data Scientist", "AI Engineer"],
+    "icon": "\ud83e\udd16"
+  },
+  {
+    "role": "Data Scientist",
+    "description": "Combines statistics, ML, and domain knowledge to extract insights from data.",
+    "required_skills": ["python", "machine learning", "pandas", "numpy", "sql", "data analysis"],
+    "preferred_skills": ["deep learning", "scikit-learn", "matplotlib", "seaborn", "jupyter", "r", "tensorflow"],
+    "related_roles": ["Machine Learning Engineer", "Data Analyst"],
+    "icon": "\ud83e\uddea"
+  },
+  {
+    "role": "Cloud Engineer",
+    "description": "Designs, deploys, and manages infrastructure and services on cloud platforms.",
+    "required_skills": ["aws", "linux", "docker", "git"],
+    "preferred_skills": ["kubernetes", "terraform", "ansible", "azure", "gcp", "ci/cd", "python", "nginx"],
+    "related_roles": ["DevOps Engineer", "Site Reliability Engineer"],
+    "icon": "\u2601\ufe0f"
+  },
+  {
+    "role": "DevOps Engineer",
+    "description": "Bridges development and operations to build automated deployment pipelines.",
+    "required_skills": ["docker", "linux", "git", "ci/cd"],
+    "preferred_skills": ["kubernetes", "terraform", "ansible", "jenkins", "github actions", "aws", "nginx", "python"],
+    "related_roles": ["Cloud Engineer", "Platform Engineer"],
+    "icon": "\ud83d\ude80"
+  },
+  {
+    "role": "Android Developer",
+    "description": "Builds native Android applications using Java or Kotlin.",
+    "required_skills": ["java", "android", "git"],
+    "preferred_skills": ["kotlin", "sql", "rest api", "firebase", "junit"],
+    "related_roles": ["Mobile Developer", "Full-Stack Developer"],
+    "icon": "\ud83d\udcf1"
+  },
+  {
+    "role": "Mobile Developer (Flutter)",
+    "description": "Builds cross-platform mobile apps for Android and iOS using Flutter.",
+    "required_skills": ["flutter", "dart", "git"],
+    "preferred_skills": ["firebase", "rest api", "sql", "android", "ios"],
+    "related_roles": ["Android Developer", "iOS Developer"],
+    "icon": "\ud83d\udcf2"
+  },
+  {
+    "role": "Cybersecurity Analyst",
+    "description": "Identifies and mitigates security vulnerabilities in systems and networks.",
+    "required_skills": ["linux", "cybersecurity", "networking"],
+    "preferred_skills": ["python", "penetration testing", "ssl/tls", "cryptography", "bash"],
+    "related_roles": ["Penetration Tester", "Security Engineer"],
+    "icon": "\ud83d\udd12"
+  },
+  {
+    "role": "NLP / AI Engineer",
+    "description": "Builds text processing pipelines and natural language AI systems.",
+    "required_skills": ["python", "nlp", "machine learning", "numpy", "pandas"],
+    "preferred_skills": ["spacy", "deep learning", "pytorch", "tensorflow", "scikit-learn", "hugging face", "git"],
+    "related_roles": ["Machine Learning Engineer", "Data Scientist"],
+    "icon": "\ud83d\udde3\ufe0f"
+  }
+]

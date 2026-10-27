@@ -1,0 +1,288 @@
+{
+  "python": {
+    "prerequisites": [],
+    "learning_order": ["Python Basics (variables, loops, functions)", "OOP in Python", "File I/O and error handling", "Standard library (os, json, re)", "pip and virtual environments"],
+    "suggested_project": "Build a CLI expense tracker that reads/writes JSON files",
+    "resources": [
+      {"title": "Official Python Tutorial", "url": "https://docs.python.org/3/tutorial/"},
+      {"title": "Automate the Boring Stuff with Python (free book)", "url": "https://automatetheboringstuff.com/"}
+    ],
+    "why_it_matters": "Python is the primary language for data science, ML, backend APIs, and automation."
+  },
+  "javascript": {
+    "prerequisites": ["html", "css"],
+    "learning_order": ["JS variables, types, operators", "Functions and scope", "DOM manipulation", "Promises and async/await", "ES6+ features (arrow functions, destructuring, modules)"],
+    "suggested_project": "Build a to-do list app with localStorage",
+    "resources": [
+      {"title": "MDN JavaScript Guide", "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide"},
+      {"title": "javascript.info", "url": "https://javascript.info/"}
+    ],
+    "why_it_matters": "JavaScript is the only language that runs natively in browsers. Essential for any web development role."
+  },
+  "typescript": {
+    "prerequisites": ["javascript"],
+    "learning_order": ["TypeScript types (string, number, boolean, any)", "Interfaces and type aliases", "Generics", "Enums", "tsconfig.json basics"],
+    "suggested_project": "Migrate an existing JavaScript project to TypeScript",
+    "resources": [
+      {"title": "TypeScript Official Docs", "url": "https://www.typescriptlang.org/docs/"},
+      {"title": "TypeScript Deep Dive (free book)", "url": "https://basarat.gitbook.io/typescript/"}
+    ],
+    "why_it_matters": "TypeScript adds static typing to JavaScript, catching bugs at compile time. Now expected in most professional frontend roles."
+  },
+  "react": {
+    "prerequisites": ["javascript", "html", "css"],
+    "learning_order": ["JSX syntax", "Components and props", "State with useState", "useEffect hook", "Event handling", "React Router basics"],
+    "suggested_project": "Build a weather app that fetches data from a free public API",
+    "resources": [
+      {"title": "React Official Docs", "url": "https://react.dev/learn"},
+      {"title": "Full Modern React Tutorial (free, YouTube)", "url": "https://www.youtube.com/watch?v=j942wKiXFu8"}
+    ],
+    "why_it_matters": "React is the most widely adopted frontend library. Required or preferred in most frontend and full-stack job descriptions."
+  },
+  "nodejs": {
+    "prerequisites": ["javascript"],
+    "learning_order": ["Node.js runtime basics", "npm and package.json", "File system module (fs)", "HTTP module", "Event emitters", "Environment variables"],
+    "suggested_project": "Build a REST API for a blog using Node.js and Express",
+    "resources": [
+      {"title": "Node.js Official Docs", "url": "https://nodejs.org/en/docs"},
+      {"title": "Node.js Crash Course (YouTube)", "url": "https://www.youtube.com/watch?v=fBNz5xF-Kx4"}
+    ],
+    "why_it_matters": "Node.js enables JavaScript on the server side. It is the backbone of most JavaScript backend stacks."
+  },
+  "sql": {
+    "prerequisites": [],
+    "learning_order": ["SELECT, WHERE, ORDER BY", "JOINs (INNER, LEFT, RIGHT)", "GROUP BY and aggregate functions", "Subqueries", "Indexes", "Transactions"],
+    "suggested_project": "Design and query a database for a library management system",
+    "resources": [
+      {"title": "SQLZoo (interactive exercises)", "url": "https://sqlzoo.net/"},
+      {"title": "Mode SQL Tutorial", "url": "https://mode.com/sql-tutorial/"}
+    ],
+    "why_it_matters": "SQL is required for almost every data or backend role. Relational databases underpin most enterprise software."
+  },
+  "postgresql": {
+    "prerequisites": ["sql"],
+    "learning_order": ["PostgreSQL installation", "psql CLI basics", "Data types (JSONB, arrays)", "Window functions", "CTEs", "Full-text search"],
+    "suggested_project": "Add PostgreSQL to a Flask or FastAPI app with proper migrations",
+    "resources": [
+      {"title": "PostgreSQL Tutorial", "url": "https://www.postgresqltutorial.com/"}
+    ],
+    "why_it_matters": "PostgreSQL is the most feature-rich open-source relational database and widely used in production systems."
+  },
+  "mongodb": {
+    "prerequisites": ["javascript"],
+    "learning_order": ["Documents and collections", "CRUD operations", "Query operators ($eq, $in, $gt)", "Aggregation pipeline", "Indexes in MongoDB", "Mongoose ODM"],
+    "suggested_project": "Build a REST API with Express + MongoDB Atlas (free tier)",
+    "resources": [
+      {"title": "MongoDB University (free courses)", "url": "https://learn.mongodb.com/"}
+    ],
+    "why_it_matters": "MongoDB is the most popular NoSQL database, commonly paired with Node.js in the MERN stack."
+  },
+  "docker": {
+    "prerequisites": ["linux"],
+    "learning_order": ["What containers are vs VMs", "Dockerfile syntax", "docker build / run / ps / stop", "docker-compose for multi-service apps", "Volumes and networks"],
+    "suggested_project": "Containerise a Python Flask app with a Dockerfile and docker-compose",
+    "resources": [
+      {"title": "Play With Docker (free browser playground)", "url": "https://labs.play-with-docker.com/"},
+      {"title": "Docker Official Get Started", "url": "https://docs.docker.com/get-started/"}
+    ],
+    "why_it_matters": "Docker is the industry standard for packaging and deploying applications consistently across environments."
+  },
+  "git": {
+    "prerequisites": [],
+    "learning_order": ["git init, add, commit", "Branching and merging", "Remote repositories (push/pull)", "Resolving merge conflicts", "git rebase and stash"],
+    "suggested_project": "Contribute a small fix to any public GitHub repository",
+    "resources": [
+      {"title": "Pro Git Book (free online)", "url": "https://git-scm.com/book/en/v2"},
+      {"title": "Learn Git Branching (interactive)", "url": "https://learngitbranching.js.org/"}
+    ],
+    "why_it_matters": "Git is the universal version control system. It is a non-negotiable skill in every software engineering role."
+  },
+  "machine learning": {
+    "prerequisites": ["python", "numpy", "pandas"],
+    "learning_order": ["Supervised vs unsupervised learning", "Linear and logistic regression", "Decision trees and random forests", "Model evaluation (accuracy, F1, ROC-AUC)", "scikit-learn pipeline"],
+    "suggested_project": "Train a classifier on the Titanic or Iris dataset and evaluate it properly",
+    "resources": [
+      {"title": "scikit-learn User Guide", "url": "https://scikit-learn.org/stable/user_guide.html"},
+      {"title": "Kaggle Learn ML courses (free)", "url": "https://www.kaggle.com/learn/intro-to-machine-learning"}
+    ],
+    "why_it_matters": "Machine learning is the core of AI engineering. Required for any data science or ML engineering role."
+  },
+  "deep learning": {
+    "prerequisites": ["machine learning", "python", "numpy"],
+    "learning_order": ["Neural network fundamentals (layers, activation, backpropagation)", "TensorFlow or PyTorch basics", "CNNs for image tasks", "RNNs / LSTMs for sequences", "Transfer learning"],
+    "suggested_project": "Build an image classifier on CIFAR-10 using Keras",
+    "resources": [
+      {"title": "fast.ai (free practical DL course)", "url": "https://course.fast.ai/"},
+      {"title": "Deep Learning Book (free)", "url": "https://www.deeplearningbook.org/"}
+    ],
+    "why_it_matters": "Deep learning powers modern AI — computer vision, NLP, speech. Essential for ML Engineer roles."
+  },
+  "aws": {
+    "prerequisites": ["linux", "docker"],
+    "learning_order": ["EC2 instances", "S3 buckets and permissions", "IAM roles and policies", "Lambda serverless functions", "RDS managed databases", "CloudWatch monitoring"],
+    "suggested_project": "Deploy a static website on S3 + CloudFront with HTTPS",
+    "resources": [
+      {"title": "AWS Free Tier", "url": "https://aws.amazon.com/free/"},
+      {"title": "AWS Cloud Practitioner Essentials (free course)", "url": "https://aws.amazon.com/training/learn-about/cloud-practitioner/"}
+    ],
+    "why_it_matters": "AWS has the largest cloud market share. Cloud skills are required in most mid-to-senior engineering roles."
+  },
+  "kubernetes": {
+    "prerequisites": ["docker", "linux"],
+    "learning_order": ["Pods and deployments", "Services and ingress", "ConfigMaps and secrets", "kubectl CLI", "Helm charts"],
+    "suggested_project": "Deploy a 2-container app (frontend + backend) on minikube",
+    "resources": [
+      {"title": "Kubernetes Interactive Tutorial", "url": "https://kubernetes.io/docs/tutorials/kubernetes-basics/"},
+      {"title": "Play with Kubernetes (free)", "url": "https://labs.play-with-k8s.com/"}
+    ],
+    "why_it_matters": "Kubernetes is the standard platform for deploying containerised apps at scale. Required in DevOps/cloud roles."
+  },
+  "django": {
+    "prerequisites": ["python", "sql"],
+    "learning_order": ["Django project structure", "Models and ORM", "Views and URL routing", "Templates", "Django REST Framework"],
+    "suggested_project": "Build a blog with user authentication using Django",
+    "resources": [
+      {"title": "Django Official Tutorial", "url": "https://docs.djangoproject.com/en/stable/intro/tutorial01/"},
+      {"title": "Django for Beginners (free chapters)", "url": "https://djangoforbeginners.com/"}
+    ],
+    "why_it_matters": "Django is Python's most popular full-stack web framework, used by Instagram, Disqus, and many startups."
+  },
+  "flask": {
+    "prerequisites": ["python"],
+    "learning_order": ["Flask app setup", "Routes and URL parameters", "Request / Response cycle", "Jinja2 templates", "Flask SQLAlchemy"],
+    "suggested_project": "Build a URL shortener API with Flask and SQLite",
+    "resources": [
+      {"title": "Flask Official Quickstart", "url": "https://flask.palletsprojects.com/en/stable/quickstart/"}
+    ],
+    "why_it_matters": "Flask is the lightweight Python web framework preferred for small APIs and microservices."
+  },
+  "linux": {
+    "prerequisites": [],
+    "learning_order": ["File system navigation (ls, cd, cat, less)", "File permissions (chmod, chown)", "Processes (ps, kill, top)", "Package manager (apt / yum)", "Shell scripting basics"],
+    "suggested_project": "Set up a LAMP/LEMP stack on a free cloud VM (Oracle Free Tier)",
+    "resources": [
+      {"title": "LinuxCommand.org (free)", "url": "http://linuxcommand.org/"},
+      {"title": "OverTheWire: Bandit (gamified Linux practice)", "url": "https://overthewire.org/wargames/bandit/"}
+    ],
+    "why_it_matters": "Almost all servers run Linux. Shell proficiency is required for backend, DevOps, and cloud roles."
+  },
+  "html": {
+    "prerequisites": [],
+    "learning_order": ["Document structure", "Semantic elements (nav, header, main, section, article)", "Forms and inputs", "Tables", "Accessibility (alt text, ARIA roles)"],
+    "suggested_project": "Build a personal portfolio page with semantic HTML",
+    "resources": [
+      {"title": "MDN HTML Basics", "url": "https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML"}
+    ],
+    "why_it_matters": "HTML is the structure of every webpage. The first thing to learn for any web development path."
+  },
+  "css": {
+    "prerequisites": ["html"],
+    "learning_order": ["Box model (margin, border, padding)", "Flexbox", "CSS Grid", "Responsive design (media queries)", "CSS variables"],
+    "suggested_project": "Style your HTML portfolio page fully with CSS Grid and Flexbox",
+    "resources": [
+      {"title": "CSS Tricks Complete Guide to Flexbox", "url": "https://css-tricks.com/snippets/css/a-guide-to-flexbox/"},
+      {"title": "Grid Garden (interactive)", "url": "https://cssgridgarden.com/"}
+    ],
+    "why_it_matters": "CSS controls the visual presentation of every webpage. Inseparable from HTML in frontend work."
+  },
+  "numpy": {
+    "prerequisites": ["python"],
+    "learning_order": ["ndarray creation and shape", "Array indexing and slicing", "Broadcasting", "Linear algebra ops", "Random module"],
+    "suggested_project": "Implement matrix multiplication from scratch, then verify with NumPy",
+    "resources": [
+      {"title": "NumPy Quickstart", "url": "https://numpy.org/doc/stable/user/quickstart.html"}
+    ],
+    "why_it_matters": "NumPy is the foundation of all Python scientific computing, including scikit-learn, pandas, and TensorFlow."
+  },
+  "pandas": {
+    "prerequisites": ["python", "numpy"],
+    "learning_order": ["Series and DataFrame creation", "Indexing (loc, iloc)", "GroupBy and aggregation", "Merging and joining", "Reading CSV and Excel files"],
+    "suggested_project": "Perform exploratory data analysis on the Titanic dataset (Kaggle)",
+    "resources": [
+      {"title": "Pandas Getting Started", "url": "https://pandas.pydata.org/docs/getting_started/index.html"},
+      {"title": "Kaggle Pandas course (free)", "url": "https://www.kaggle.com/learn/pandas"}
+    ],
+    "why_it_matters": "Pandas is the primary tool for data loading, cleaning, and analysis in Python. Essential for data science."
+  },
+  "rest api": {
+    "prerequisites": ["http_basics"],
+    "learning_order": ["HTTP methods (GET, POST, PUT, DELETE)", "Status codes", "JSON request/response", "Authentication (Bearer tokens, API keys)", "API testing with Postman"],
+    "suggested_project": "Build and test a CRUD API for a bookstore with any backend framework",
+    "resources": [
+      {"title": "REST API Tutorial", "url": "https://restfulapi.net/"}
+    ],
+    "why_it_matters": "REST APIs are how almost all web services communicate. Understanding them is mandatory for backend and full-stack development."
+  },
+  "ci/cd": {
+    "prerequisites": ["git", "docker"],
+    "learning_order": ["What is CI/CD", "GitHub Actions YAML syntax", "Running tests in CI", "Building Docker images in CI", "Deployment strategies (blue-green, rolling)"],
+    "suggested_project": "Set up a GitHub Actions workflow that tests and lints a Python project on every push",
+    "resources": [
+      {"title": "GitHub Actions Quickstart", "url": "https://docs.github.com/en/actions/quickstart"}
+    ],
+    "why_it_matters": "CI/CD automates testing and deployment, enabling fast and reliable software delivery. Expected in all modern engineering teams."
+  },
+  "tensorflow": {
+    "prerequisites": ["python", "numpy", "machine learning"],
+    "learning_order": ["Tensors and operations", "Keras Sequential API", "Training loops", "Saving and loading models", "TensorBoard"],
+    "suggested_project": "Train a digit classifier on MNIST using TensorFlow/Keras",
+    "resources": [
+      {"title": "TensorFlow Official Tutorials", "url": "https://www.tensorflow.org/tutorials"}
+    ],
+    "why_it_matters": "TensorFlow (with Keras) is the most widely deployed deep learning framework, used extensively in production ML systems."
+  },
+  "pytorch": {
+    "prerequisites": ["python", "numpy", "machine learning"],
+    "learning_order": ["Tensors and autograd", "nn.Module and layers", "Training loop", "DataLoader", "GPU training basics"],
+    "suggested_project": "Implement a simple feedforward network on CIFAR-10 from scratch",
+    "resources": [
+      {"title": "PyTorch Official Tutorials", "url": "https://pytorch.org/tutorials/"}
+    ],
+    "why_it_matters": "PyTorch is the dominant framework for research and increasingly for production. Most new ML papers use PyTorch."
+  },
+  "spring": {
+    "prerequisites": ["java"],
+    "learning_order": ["Spring Boot project setup", "Dependency injection", "REST controllers", "Spring Data JPA", "Spring Security basics"],
+    "suggested_project": "Build a REST API for a student management system with Spring Boot",
+    "resources": [
+      {"title": "Spring Boot Guides", "url": "https://spring.io/guides"}
+    ],
+    "why_it_matters": "Spring Boot is the dominant Java backend framework used in enterprise and fintech applications."
+  },
+  "redis": {
+    "prerequisites": ["linux"],
+    "learning_order": ["Key-value data model", "Strings, lists, sets, hashes", "TTL and expiry", "Pub/sub", "Redis as a cache"],
+    "suggested_project": "Add Redis caching to an existing Python API to reduce DB queries",
+    "resources": [
+      {"title": "Redis University (free)", "url": "https://university.redis.com/"}
+    ],
+    "why_it_matters": "Redis is the most popular in-memory data store, used for caching, sessions, and real-time features."
+  },
+  "graphql": {
+    "prerequisites": ["rest api", "javascript"],
+    "learning_order": ["Schema definition language", "Queries and mutations", "Resolvers", "Apollo Client basics", "N+1 problem and DataLoader"],
+    "suggested_project": "Replace a REST endpoint with a GraphQL query in an existing API",
+    "resources": [
+      {"title": "GraphQL Official How to GraphQL", "url": "https://www.howtographql.com/"}
+    ],
+    "why_it_matters": "GraphQL allows clients to request exactly the data they need, reducing over-fetching. Increasingly adopted in modern APIs."
+  },
+  "nextjs": {
+    "prerequisites": ["react", "javascript"],
+    "learning_order": ["File-based routing", "Server-side rendering vs static generation", "API routes", "Image optimization", "Middleware"],
+    "suggested_project": "Build a blog with Next.js where posts are markdown files rendered at build time",
+    "resources": [
+      {"title": "Next.js Official Learn Course", "url": "https://nextjs.org/learn"}
+    ],
+    "why_it_matters": "Next.js is the leading React framework for production apps. Commonly required in frontend and full-stack roles."
+  },
+  "agile": {
+    "prerequisites": [],
+    "learning_order": ["Agile manifesto principles", "Scrum roles (PO, SM, Dev)", "Sprint planning and retrospectives", "Kanban board basics", "Writing user stories"],
+    "suggested_project": "Run a 1-week sprint on your own side project using a free Trello board",
+    "resources": [
+      {"title": "Scrum Guide (official, free PDF)", "url": "https://scrumguides.org/"}
+    ],
+    "why_it_matters": "Almost every software team uses Agile methodologies. Understanding scrum/kanban is expected even for junior roles."
+  }
+}

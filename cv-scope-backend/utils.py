@@ -33,7 +33,7 @@ from rapidfuzz import fuzz, process
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-from skill_taxonomy import ALIAS_MAP, CANONICAL_SKILLS
+from skill_taxonomy import ALIAS_MAP, CANONICAL_SKILLS, get_skill_category
 
 try:
     import yake  # type: ignore
@@ -116,26 +116,37 @@ def _get_yake_extractor():
 # Layer 1 — Text Extraction
 # ─────────────────────────────────────────────────────────────────────────────
 
-def extract_text(file) -> str:
+def extract_text(raw_bytes: bytes, filename: str) -> str:
     """
-    Extract plain text from an UploadFile (PDF or DOCX).
-    Reads into BytesIO to avoid stream cursor issues with spooled temp files.
-    """
-    filename: str = file.filename.lower()
-    raw = file.file.read()
+    Extract plain text from raw file bytes (PDF or DOCX).
 
-    if filename.endswith(".pdf"):
+    Args:
+        raw_bytes: File content as bytes (already read from UploadFile or file system).
+        filename:  Original filename; used to determine file type.
+
+    Returns:
+        Extracted plain text, or empty string if extraction fails.
+    """
+    name = filename.lower()
+
+    if name.endswith(".pdf"):
         text_parts: list[str] = []
-        with pdfplumber.open(io.BytesIO(raw)) as pdf:
-            for page in pdf.pages:
-                page_text = page.extract_text()
-                if page_text:
-                    text_parts.append(page_text)
+        try:
+            with pdfplumber.open(io.BytesIO(raw_bytes)) as pdf:
+                for page in pdf.pages:
+                    page_text = page.extract_text()
+                    if page_text:
+                        text_parts.append(page_text)
+        except Exception as e:
+            logger.warning("pdfplumber failed: %s", e)
         return "\n".join(text_parts)
 
-    elif filename.endswith(".docx"):
-        doc = docx.Document(io.BytesIO(raw))
-        return "\n".join(p.text for p in doc.paragraphs if p.text.strip())
+    elif name.endswith(".docx"):
+        try:
+            doc = docx.Document(io.BytesIO(raw_bytes))
+            return "\n".join(p.text for p in doc.paragraphs if p.text.strip())
+        except Exception as e:
+            logger.warning("python-docx failed: %s", e)
 
     return ""
 
@@ -854,4 +865,27 @@ def calculate_similarity(
         "text_similarity_skills": text_similarity_skills,
         "text_similarity_experience": text_similarity_experience,
         "final_score": final_score,
+        "formula": (
+            "final_score = 0.60 × skill_match_score + 0.40 × text_similarity_score. "
+            "skill_match_score is the confidence-weighted fraction of JD skills found in the resume. "
+            "text_similarity_score is a section-weighted TF-IDF cosine similarity "
+            "(50% skills section, 30% experience/projects, 20% full document)."
+        ),
     }
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Skill Categorisation Utility
+# ─────────────────────────────────────────────────────────────────────────────
+
+def group_skills_by_category(skills: list[str]) -> dict[str, list[str]]:
+    """
+    Group a flat list of canonical skill names into category buckets.
+    Returns {category_name: [skill, ...]} sorted alphabetically within each bucket.
+    Categories with no skills are omitted.
+    """
+    groups: dict[str, list[str]] = {}
+    for skill in skills:
+        cat = get_skill_category(skill)
+        groups.setdefault(cat, []).append(skill)
+    return {k: sorted(v) for k, v in sorted(groups.items())}

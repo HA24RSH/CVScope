@@ -1,0 +1,123 @@
+{
+  "_meta": {
+    "description": "CVScope evaluation dataset — synthetic and manually reviewed examples.",
+    "dataset_type": "SYNTHETIC",
+    "warning": "This data was created artificially for evaluation purposes only. Results reflect performance on synthetic examples, not real-world resumes.",
+    "version": "1.0",
+    "created": "2026-10"
+  },
+  "skill_extraction_tests": [
+    {
+      "id": "SE_001",
+      "doc_type": "resume",
+      "text": "Skills: Python, React, PostgreSQL, Docker, Git\nExperience: Built REST APIs using FastAPI and deployed on AWS.",
+      "expected_skills": ["python", "react", "postgresql", "docker", "git", "rest api", "fastapi", "aws"],
+      "notes": "Clean skills section — should be high precision."
+    },
+    {
+      "id": "SE_002",
+      "doc_type": "resume",
+      "text": "Technical Skills: JavaScript, TypeScript, Node.js, MongoDB, Redis\nWorked with React.js and Next.js for frontend.",
+      "expected_skills": ["javascript", "typescript", "nodejs", "mongodb", "redis", "react", "nextjs"],
+      "notes": "Common aliases: React.js, Node.js, Next.js"
+    },
+    {
+      "id": "SE_003",
+      "doc_type": "resume",
+      "text": "Skills: Java, Spring Boot, MySQL, Microservices, Docker, Kubernetes, CI/CD\nProjects: Built a microservice-based e-commerce backend with Spring.",
+      "expected_skills": ["java", "spring", "mysql", "microservices", "docker", "kubernetes", "ci/cd"],
+      "notes": "Spring Boot alias test"
+    },
+    {
+      "id": "SE_004",
+      "doc_type": "resume",
+      "text": "ML Skills: Python, TensorFlow, PyTorch, scikit-learn, Pandas, NumPy\nCertifications: Deep Learning Specialization\nProjects: Image classification CNN using Keras.",
+      "expected_skills": ["python", "tensorflow", "pytorch", "scikit-learn", "pandas", "numpy", "deep learning", "keras"],
+      "notes": "ML skills section — tests tensorflow/pytorch/keras"
+    },
+    {
+      "id": "SE_005",
+      "doc_type": "resume",
+      "text": "Programming Languages: C++, Golang, Rust\nTools: Git, Linux, Vim\nDatabases: PostgreSQL, Redis",
+      "expected_skills": ["cpp", "golang", "rust", "git", "linux", "vim", "postgresql", "redis"],
+      "notes": "Less common languages — tests alias for c++ (cpp)"
+    },
+    {
+      "id": "SE_006",
+      "doc_type": "job_description",
+      "text": "We are looking for a Frontend Developer with 2+ years of experience in React and TypeScript. Must know CSS, HTML5, and Git. Experience with Next.js and Redux is a plus.",
+      "expected_skills": ["react", "typescript", "css", "html", "git", "nextjs", "redux"],
+      "notes": "JD extraction test"
+    },
+    {
+      "id": "SE_007",
+      "doc_type": "job_description",
+      "text": "Backend role: Python, Django or Flask, REST APIs, PostgreSQL, Docker. AWS experience preferred. Knowledge of CI/CD pipelines is a bonus.",
+      "expected_skills": ["python", "django", "flask", "rest api", "postgresql", "docker", "aws", "ci/cd"],
+      "notes": "JD with optional skills"
+    },
+    {
+      "id": "SE_008",
+      "doc_type": "resume",
+      "text": "I am a dedicated and hardworking individual with excellent communication skills and strong problem-solving abilities. I enjoy working in a team environment.",
+      "expected_skills": [],
+      "notes": "Noise-only resume — should return no skills. Tests false positive rate."
+    },
+    {
+      "id": "SE_009",
+      "doc_type": "resume",
+      "text": "Technologies: js, ts, py, k8s, gh actions\nFrameworks: ReactJS, NodeJS, ExpressJS",
+      "expected_skills": ["javascript", "typescript", "python", "kubernetes", "github actions", "react", "nodejs", "express"],
+      "notes": "Abbreviation/alias test: js→javascript, ts→typescript, py not in alias, k8s→kubernetes"
+    },
+    {
+      "id": "SE_010",
+      "doc_type": "resume",
+      "text": "Senior Software Engineer at Google Inc. Led a team of 10 engineers. Managed multiple projects. Excellent leadership and communication skills.",
+      "expected_skills": [],
+      "notes": "Company name (Google Inc) and soft skills must NOT be extracted as tech skills."
+    }
+  ],
+  "matching_tests": [
+    {
+      "id": "MT_001",
+      "resume_skills": ["python", "react", "postgresql", "docker", "git", "rest api"],
+      "jd_skills": ["python", "react", "postgresql", "docker"],
+      "expected_matched": ["python", "react", "postgresql", "docker"],
+      "expected_missing": [],
+      "notes": "Resume has all JD skills — expected 100% skill match"
+    },
+    {
+      "id": "MT_002",
+      "resume_skills": ["python", "django", "postgresql"],
+      "jd_skills": ["python", "react", "postgresql", "docker", "typescript"],
+      "expected_matched": ["python", "postgresql"],
+      "expected_missing": ["react", "docker", "typescript"],
+      "notes": "Partial match — resume covers 2/5 JD skills"
+    },
+    {
+      "id": "MT_003",
+      "resume_skills": ["reactjs", "javascript", "css"],
+      "jd_skills": ["react", "javascript", "css"],
+      "expected_matched": ["react", "javascript", "css"],
+      "expected_missing": [],
+      "notes": "Fuzzy alias: reactjs should match react"
+    },
+    {
+      "id": "MT_004",
+      "resume_skills": [],
+      "jd_skills": ["python", "docker"],
+      "expected_matched": [],
+      "expected_missing": ["python", "docker"],
+      "notes": "Empty resume — everything missing"
+    },
+    {
+      "id": "MT_005",
+      "resume_skills": ["python", "ml", "pandas"],
+      "jd_skills": [],
+      "expected_matched": [],
+      "expected_missing": [],
+      "notes": "Empty JD — no match possible"
+    }
+  ]
+}
