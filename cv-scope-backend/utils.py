@@ -727,11 +727,17 @@ def match_skills(resume_skills: list[str], jd_skills: list[str]) -> MatchResult:
     if not jd_skills:
         return MatchResult([], [])
 
-    resume_set = set(resume_skills)
+    def canonicalize(skill: str) -> str:
+        normalized = re.sub(r"\s+", " ", skill.strip().lower())
+        return ALIAS_MAP.get(normalized, normalized)
+
+    canonical_resume_skills = [canonicalize(skill) for skill in resume_skills]
+    canonical_jd_skills = [canonicalize(skill) for skill in jd_skills]
+    resume_set = set(canonical_resume_skills)
     matched: list[str] = []
     missing: list[str] = []
 
-    for jd_skill in jd_skills:
+    for jd_skill in canonical_jd_skills:
         # Pass 1 — exact
         if jd_skill in resume_set:
             matched.append(jd_skill)
@@ -740,7 +746,7 @@ def match_skills(resume_skills: list[str], jd_skills: list[str]) -> MatchResult:
         # Pass 2 — fuzzy
         best = process.extractOne(
             jd_skill,
-            resume_skills,
+            canonical_resume_skills,
             scorer=fuzz.token_sort_ratio,
             score_cutoff=85,
         )

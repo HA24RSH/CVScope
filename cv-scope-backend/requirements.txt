@@ -1,0 +1,43 @@
+# ════════════════════════════════════════════════════════════════
+#  CVScope Backend — Python Requirements
+#  Python 3.10+
+#
+#  Install:
+#    pip install -r requirements.txt
+#
+#  After installing, download the spaCy model:
+#    python -m spacy download en_core_web_sm
+#
+#  Optional (improves keyphrase extraction):
+#    pip install yake
+# ════════════════════════════════════════════════════════════════
+
+# ── Web framework ─────────────────────────────────────────────
+fastapi>=0.111.0
+uvicorn[standard]>=0.29.0
+python-multipart>=0.0.9        # multipart/form-data for UploadFile
+
+# ── NLP & text processing ─────────────────────────────────────
+spacy>=3.7.0,<4.0.0            # NLP pipeline (PhraseMatcher, NER, noun-chunks)
+# After install run: python -m spacy download en_core_web_sm
+
+# ── Fuzzy matching ────────────────────────────────────────────
+rapidfuzz>=3.6.0               # Fast Levenshtein / token_sort_ratio matching
+
+# ── Similarity scoring ────────────────────────────────────────
+scikit-learn>=1.4.0            # TF-IDF vectorizer + cosine_similarity
+
+# ── File parsing ──────────────────────────────────────────────
+pdfplumber>=0.11.0             # PDF text extraction (layer-based PDFs)
+python-docx>=1.1.0             # DOCX text extraction
+
+# ── Keyphrase extraction (optional, gracefully degrades) ──────
+yake>=0.4.8                    # Lightweight unsupervised keyphrase extractor
+
+# ── Testing ───────────────────────────────────────────────────
+pytest>=8.1.0
+pytest-asyncio>=0.23.0         # Async endpoint testing
+httpx>=0.27.0                  # HTTPX client for FastAPI TestClient
+
+# ── Utilities ─────────────────────────────────────────────────
+numpy>=1.26.0                  # Transitive dependency of scikit-learn / spacy

@@ -80,14 +80,14 @@ def _prf(tp: int, fp: int, fn: int) -> tuple[float, float, float]:
     return precision, recall, f1
 
 
-def _print_separator(char: str = "─", width: int = 70) -> None:
+def _print_separator(char: str = "-", width: int = 70) -> None:
     print(char * width)
 
 
 def _print_header(title: str) -> None:
-    _print_separator("═")
+    _print_separator("=")
     print(f"  {title}")
-    _print_separator("═")
+    _print_separator("=")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -206,6 +206,10 @@ def evaluate_skill_matching(tests: list[dict]) -> dict:
 # ─────────────────────────────────────────────────────────────────────────────
 
 def main() -> None:
+    # Keep the report readable on Windows consoles that default to cp1252.
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
     _print_header("CVScope — Local Evaluation Script")
     print()
     print("  Dataset type : SYNTHETIC (manually created for testing)")

@@ -1,141 +1,198 @@
-CvScope — Resume Analysis & Skill Matching (FastAPI + React)
-CvScope is a full-stack web app that compares a candidate resume (PDF/DOCX) against a job description and returns:
+# CVScope — AI-Powered Resume Analyzer
 
-Match percentage (skills coverage + section-weighted TF‑IDF cosine similarity)
-Extracted resume skills and job skills
-Matched skills and missing skills
-Similarity breakdown (skill match vs text similarity)
-Explainable skill extraction details (confidence + sources)
-Features
-Upload resume (PDF / DOCX)
-Paste job description
-Skill extraction (spaCy PhraseMatcher + NER + noun chunks + YAKE keyphrases)
-Skill matching (fuzzy match)
-Match percentage (weighted skills + text similarity)
-React UI to display results
-Tech Stack
-Backend
+> **100% local. No cloud APIs. No data leaves your machine.**
 
-FastAPI (API server): main.py
-PDF parsing: pdfplumber
-DOCX parsing: python-docx
-Similarity: scikit-learn (TF‑IDF + cosine similarity)
-NLP: spaCy (en_core_web_sm)
-Fuzzy matching: rapidfuzz
-Keyphrases (unknown skills): YAKE
-Upload handling: python-multipart (required by FastAPI for form/file uploads)
-Frontend
+CVScope is a full-stack NLP application that scores how well a resume matches a job description, extracts skills with explainability, identifies skill gaps, generates learning recommendations, and matches the candidate's profile to predefined job roles.
 
-React (Create React App): package.json
-Project Structure
-Backend
-FastAPI — API server
-pdfplumber — PDF parsing
-python-docx — DOCX parsing
-scikit-learn — TF-IDF + cosine similarity
-python-multipart — file uploads
+---
 
-Frontend
-React (Create React App)
-📁 Project Structure
+## Features
+
+| Feature | Detail |
+|---|---|
+| **4-layer skill extraction** | PhraseMatcher → NER → Noun-chunks → YAKE keyphrase |
+| **Section-aware parsing** | Skills section gets highest weight; experience/education get lower |
+| **Confidence scoring** | Per-skill confidence: `base_confidence × section_weight × techiness_multiplier` |
+| **Fuzzy matching** | RapidFuzz `token_sort_ratio ≥ 85` for alias tolerance |
+| **TF-IDF similarity** | Section-weighted cosine similarity: 50% skills + 30% experience + 20% full doc |
+| **Skill gap analysis** | Learning paths, prerequisites, practice projects for every missing skill |
+| **Job role matching** | Score against 12 predefined role profiles (70% required + 30% preferred) |
+| **Explainability** | Plain-English score narrative + full formula breakdown in UI |
+| **Skill categorisation** | 13 categories: Languages, Frontend, Backend, Databases, AI/ML, DevOps… |
+| **220+ skills** | Curated taxonomy with hundreds of aliases (ReactJS → react, k8s → kubernetes) |
+
+---
+
+## Project Structure
+
+```
 CVScope/
+├── cv-scope-backend/
+│   ├── main.py                    # FastAPI app (POST /analyze, GET /health)
+│   ├── utils.py                   # 4-layer NLP pipeline + scoring
+│   ├── skill_taxonomy.py          # 220+ skills, alias map, categories
+│   ├── recommendations.py         # Skill gap + role matching logic
+│   ├── skill_recommendations.json # Learning paths per skill
+│   ├── job_roles.json             # 12 role profiles
+│   ├── evaluate.py                # Local P/R/F1 evaluation script
+│   ├── requirements.txt           # Python dependencies
+│   └── tests/
+│       ├── test_extraction.py     # Taxonomy, normalization, extraction tests
+│       ├── test_matching.py       # Matching + scoring formula tests
+│       ├── test_recommendations.py# Skill gap + role matching tests
+│       ├── test_api.py            # Full API integration tests
+│       └── evaluation_dataset.json# Synthetic test dataset
 │
-├── backend/
-│   ├── main.py          # FastAPI app & routes
-│   ├── utils.py         # Core logic (NLP, matching, similarity)
-│   ├── skill_db.py      # Skill aliases (optional)
-│   └── Resume.csv       # Sample data
-│
-├── frontend/
-│   ├── UploadForm.js    # Resume + JD upload
-│   ├── ResultCard.js    # Results UI
-│   └── package.json
-⚙️ Setup & Run (Windows)
+└── cv-scope-frontend/
+    ├── src/
+    │   ├── App.js                 # Root — wires UploadForm → Dashboard
+    │   ├── components/
+    │   │   ├── Header.js
+    │   │   ├── UploadForm.js      # File upload + JD textarea + analyze button
+    │   │   ├── Dashboard.js       # Tab router (5 tabs)
+    │   │   ├── ScoreOverview.js   # Gauge + metric bars + skill pills
+    │   │   ├── SkillsPanel.js     # By-category / resume / JD views
+    │   │   ├── RecommendationsPanel.js  # Skill gap cards with learning paths
+    │   │   ├── RolesPanel.js      # Job role match bars
+    │   │   └── ExplainPanel.js    # Score narrative + AI concepts
+    │   └── styles/global.css      # Dark glassmorphism design system
+    └── package.json
+```
 
-⚠️ You must run both backend and frontend simultaneously.
+---
 
-🔹 1. Backend Setup (FastAPI)
-Step 1: Create & activate virtual environment
+## Quick Start
+
+### Backend
+
+```bash
+cd cv-scope-backend
+
+# 1. Create and activate a virtual environment
 python -m venv .venv
+# Windows:
 .venv\Scripts\activate
+# macOS/Linux:
+source .venv/bin/activate
 
-If blocked:
+# 2. Install dependencies
+pip install -r requirements.txt
 
-Set-ExecutionPolicy -Scope Process Bypass
-Step 2: Install dependencies
-python -m pip install --upgrade pip
-pip install fastapi uvicorn pdfplumber python-docx scikit-learn python-multipart
-Step 3: Run server
-python -m uvicorn main:app --reload --host 127.0.0.1 --port 8000
-Step 4: Verify
+# 3. Download the spaCy model (required)
+python -m spacy download en_core_web_sm
 
-Open:
+# 4. Start the server
+uvicorn main:app --reload
+# → http://127.0.0.1:8000
+```
 
-http://127.0.0.1:8000/
+### Frontend
 
-Expected response:
+```bash
+cd cv-scope-frontend
 
-{"message":"CVScope Backend v2 Running","status":"ok"}
-Important note about the common “uvicorn not recognized” error:
+npm install
+npm start
+# → http://localhost:3000
+```
 
-If you run uvicorn main:app --reload and get “uvicorn is not recognized”, use python -m uvicorn ... as shown above. That ensures you’re using the uvicorn installed in your currently activated venv.
-2) Start the frontend (React)
-Open a second terminal and run:
+---
 
-Open:
+## API Reference
 
-http://localhost:3000/
-🔗 API Endpoints
-✅ Health Check
-GET /
-📊 Analyze Resume
-POST /analyze
-Content-Type: multipart/form-data
-Form fields:
-resume: file (PDF or DOCX)
-job_description: string
-Response JSON fields:
+### `GET /`
+Health check. Returns `{"message": "CVScope Backend v3 Running", "status": "ok"}`.
 
-match_percentage: number (0–100)
-resume_skills: array of strings
-job_skills: array of strings
-matched_skills: array of strings
-missing_skills: array of strings
-similarity_breakdown: object (skill_match_score, text_similarity_score, final_score, …)
-resume_skill_details: array (skill, confidence, sources, sections, surface_forms)
-job_skill_details: array (skill, confidence, sources, sections, surface_forms)
-Where it’s implemented:
+### `GET /health`
+Lightweight ping. Returns `{"status": "ok"}`.
 
-Route: main.py
-Logic: utils.py
-Troubleshooting
-Backend won’t start: “uvicorn is not recognized”
+### `POST /analyze`
 
-Activate the venv first, then run:
-python -m uvicorn main:app --reload --host 127.0.0.1 --port 8000
-Backend error about multipart/form-data
+**Request:** `multipart/form-data`
 
-Install python-multipart in the same venv you’re running:
-python -m pip install python-multipart
-PowerShell: running scripts is disabled
+| Field | Type | Description |
+|---|---|---|
+| `resume` | File | PDF or DOCX (max 10 MB) |
+| `job_description` | string | Raw job description text (min 30 chars) |
 
-Run in that terminal:
-Set-ExecutionPolicy -Scope Process Bypass
-Then activate your venv again.
-Frontend shows “Failed to connect to backend”
+**Response:** JSON object
 
-Confirm backend is running at http://127.0.0.1:8000/
-Confirm the frontend is using the same URL in UploadForm.js
-Make sure port 8000 isn’t blocked/in use.
-Port already in use
+| Field | Type | Description |
+|---|---|---|
+| `match_percentage` | float | Final weighted score 0–100 |
+| `resume_skills` | list[str] | Canonical skills from resume |
+| `job_skills` | list[str] | Canonical skills from JD |
+| `matched_skills` | list[str] | JD skills found in resume |
+| `missing_skills` | list[str] | JD skills NOT in resume |
+| `similarity_breakdown` | dict | Component scores + formula string |
+| `resume_skill_details` | list[dict] | Per-skill confidence + sources + sections |
+| `job_skill_details` | list[dict] | Same, for JD |
+| `skill_categories` | dict | Resume skills grouped by category |
+| `score_explanation` | list[str] | Plain-English explanation of the score |
+| `skill_recommendations` | list[dict] | Learning paths for missing skills |
+| `role_matches` | list[dict] | Top 5 job role matches with coverage breakdown |
 
-Change ports when starting:
-Backend: use a different --port
-Frontend: React will usually prompt to use another port automatically
-Notes / Current Behavior
-Skill extraction uses a multi-pass NLP pipeline in utils.py:
-- PhraseMatcher (taxonomy/aliases) + NER fallback + noun chunks + YAKE keyphrases
-Scoring combines:
-- Skill coverage (confidence-weighted when available)
-- Section-weighted TF‑IDF cosine similarity
-Fuzzy matching uses rapidfuzz token_sort_ratio
+---
+
+## Scoring Formula
+
+```
+final_score = 0.60 × skill_match_score + 0.40 × text_similarity_score
+
+skill_match_score  = confidence-weighted JD skill coverage × 100
+text_similarity    = section-weighted TF-IDF cosine similarity × 100
+                     (50% skills section + 30% experience + 20% full doc)
+```
+
+---
+
+## Running Tests
+
+```bash
+cd cv-scope-backend
+
+# All tests
+python -m pytest tests/ -v
+
+# Individual suites
+python -m pytest tests/test_extraction.py -v
+python -m pytest tests/test_matching.py -v
+python -m pytest tests/test_recommendations.py -v
+python -m pytest tests/test_api.py -v
+```
+
+## Running Evaluation
+
+```bash
+cd cv-scope-backend
+python evaluate.py
+```
+
+Reports per-test and aggregate Precision / Recall / F1 for skill extraction, and exact-match accuracy for skill matching.
+
+> ⚠️ The evaluation dataset is **synthetic** (manually created). Results on real-world resumes may differ.
+
+---
+
+## Limitations
+
+1. **Keyword-based only** — The score reflects textual overlap, not professional competence.
+2. **No semantic embeddings** — Synonyms not in the taxonomy may be missed. The alias map and fuzzy matching partially address this.
+3. **Image-based PDFs** — Scanned PDFs without embedded text cannot be processed.
+4. **Evaluation dataset size** — 10 extraction tests are too small for reliable generalisation.
+5. **Role profiles are static** — The 12 job role profiles were manually curated and may not reflect all job markets.
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Backend | Python 3.10+, FastAPI, Uvicorn |
+| NLP | spaCy (`en_core_web_sm`), YAKE |
+| Matching | RapidFuzz |
+| Similarity | scikit-learn TF-IDF + cosine similarity |
+| PDF parsing | pdfplumber |
+| DOCX parsing | python-docx |
+| Frontend | React 19, vanilla CSS, glassmorphism dark theme |
+| Testing | pytest, httpx (FastAPI TestClient) |
